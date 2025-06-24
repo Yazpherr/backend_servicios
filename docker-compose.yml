@@ -1,0 +1,29 @@
+# docker-compose.yml (en la raíz del proyecto)
+services:
+  db:
+    image: postgres:15
+    env_file: .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - mi_red
+
+  web:
+    build:
+      context: ./backend      # <— Aquí
+      dockerfile: Dockerfile  # si tu Dockerfile está dentro de backend/
+    env_file: .env
+    volumes:
+      - ./backend:/app         # <— Montamos solo backend/
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    networks:
+      - mi_red
+
+volumes:
+  postgres_data:
+
+networks:
+  mi_red:
